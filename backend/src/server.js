@@ -71,7 +71,7 @@ app.post(ARTICLES_PATH, (req, res, next) => {
 });
 
 
-
+// Listening
 app.listen(LISTEN_PORT, function() {
     console.log(`Serving on port ${LISTEN_PORT}`);
 });

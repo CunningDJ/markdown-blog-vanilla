@@ -4,19 +4,51 @@
     <title>Markdown Blog: Editor</title>
 </head>
 <body>
-    <div id="article-editor"
-    <form id="editor-form">
-        <label for="editor-form__title"></label>
-        <input type="text" id="editor-form__title">
+    <div id="editor">
+
+    </div>
+    <button id="editor-new-article-button">NEW ARTICLE</button>
+
+    <!-- ARTICLE CREATE Form -->
+    <form id="editor-create-form" action="http://localhost:8081/api/articles" method="POST">
+        <label for="editor-create-form__title">Title</label>
+        <input type="text" id="editor-create-form__title" name="title">
         <br/>
-        <label for="editor-form__author"></label>
-        <input type="text" id="editor-form__author">
+        <label for="editor-create-form__author">Author</label>
+        <input type="text" id="editor-create-form__author" name="author">
         <br/>
-        <label for="editor-form__content"></label>
-        <textarea id="editor-form__content"></textarea>
+        <label for="editor-create-form__markdown-content">Markdown Content</label>
+        <textarea id="editor-create-form__markdown-content" name="markdownContent"></textarea>
         <br/>
+
+        <button type="submit">CREATE</button>
     </form>
     </div>
+    
+    <!-- ARTICLE UPDATE Form -->
+    <div id="article-editor-update">
+    <!-- TODO: Update the action to use :articleId (this doesn't work as is) or move action logic to JS -->
+    <form id="editor-update-form" action="http://localhost:8081/api/articles/:articleId" method="PUT">
+        <label for="editor-update-form__title">Title</label>
+        <input type="text" id="editor-update-form__title" name="title">
+        <br/>
+        <label for="editor-update-form__author">Author</label>
+        <input type="text" id="editor-update-form__author" name="author">
+        <br/>
+        <label for="editor-update-form__date-created">Date Created</label>
+        <input type="text" id="editor-update-form__date-created" name="dateCreated">
+        <br/>
+        <label for="editor-update-form__date-updated">Date Updated</label>
+        <input type="text" id="editor-update-form__date-updated" name="dateUpdated">
+        <br/>
+        <label for="editor-update-form__markdown-content">Markdown Content</label>
+        <textarea id="editor-update-form__markdown-content" name="markdownContent"></textarea>
+        <br/>
+
+        <button type="submit">UPDATE</button>
+    </form>
+    </div>
+
 
 
     <!-- SCRIPTS -->
