@@ -1,5 +1,7 @@
 const express = require('express');
 
+const { getArticlesListing, getArticle, editArticle, createArticle } = require('./db');
+
 // Constants
 const LISTEN_PORT = 8081;
 const ARTICLES_PATH = '/articles';
@@ -12,10 +14,15 @@ const app = express();
 app.get(ARTICLES_PATH, (req, res, next) => {
 
     // TODO: fetch articles from postgres
-    //  (ONLY: title, author, dateCreated, )
-    //  (SORT BY: dateCreated)
+    getArticlesListing()
+        .then(rows => {
+            // TODO: return articles data
 
-    // TODO: return articles data
+            return res.json({ data: articlesData })
+        })
+        .catch(err => {
+            return res.json({ err })
+        })
 
 });
 
@@ -24,7 +31,12 @@ app.get(ARTICLE_ID_PATH, (req, res, next) => {
     const { articleId } = req.params;
 
     // TODO: fetch article from postgres
+    getArticle(articleId)
+        .then(rows => {
 
+            return res.json({ data: articleData })
+        })
+        .catch(err => res.json({ err }))
     // TODO: return article data
     return res.json(ARTICLE_DATA);
 });
@@ -32,22 +44,30 @@ app.get(ARTICLE_ID_PATH, (req, res, next) => {
 // Edit article
 app.put(ARTICLE_ID_PATH, (req, res, next) => {
     const { articleId } = req.params;
+    const { author, title, markdownContent } = req.body;
+    const articleData = { author, title, markdownContent };
 
-
-    // TODO: return success/err response
-    return res.json(SUCCESS_ERR_RESPONSE);
+    editArticle(articleId, articleData)
+        .then(sqlResponse => {
+            // TODO: return success/err response
+            
+        })
+        .catch(err => res.json({ err }))
 });
 
 // New article
 app.post(ARTICLES_PATH, (req, res, next) => {
-    const articleData = req.body;
-    const { articleTitle, articleAuthor, articleContent } = articleData;
+    const { articleTitle, articleAuthor, articleContent } = req.body;
+    const articleData = { articleTitle, articleAuthor, articleContent };
 
     // TODO: insert in postgres
-    //  ADD: dateCreated (auto with postgres?)
+    createArticle(articleData)
+        .then(sqlResponse => {
+            // TODO: return success/err response
+        })
+        .catch(err => res.json({ err }))
 
 
-    // TODO: return success/err response
 });
 
 
