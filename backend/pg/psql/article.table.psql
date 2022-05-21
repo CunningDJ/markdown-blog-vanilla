@@ -1,0 +1,12 @@
+CREATE TABLE article(
+    /* FIELDS */
+    id uuid DEFAULT uuid_generate_v4(),
+    author VARCHAR NOT NULL,
+    markdown_content text,
+
+    date_created timestamp DEFAULT now(),
+    date_updated timestamp DEFAULT now(),
+
+    /* KEYS */
+    PRIMARY KEY (id)
+);
