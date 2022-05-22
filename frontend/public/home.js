@@ -82,9 +82,8 @@ class ArticlesListing {
                     this.listElement.innerHTML = '';
                     this.messageElement.textContent = 'No Articles Yet!'
                     return;
-                } else {
-                    this.messageElement.textContent = '';
                 }
+                this.messageElement.textContent = '';
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
                     // Could also diff date updated with currently listed items' date updated if the home page has an internal

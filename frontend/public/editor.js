@@ -43,9 +43,8 @@ class EditorArticles {
                     this.listElement.innerHTML = '';
                     this.messageElement.textContent = 'No Articles Yet!'
                     return;
-                } else {
-                    this.messageElement.textContent = '';
                 }
+                this.messageElement.textContent = '';
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
                     const { articleId } = articleData;
