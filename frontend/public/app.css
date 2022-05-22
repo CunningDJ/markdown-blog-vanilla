@@ -1,7 +1,26 @@
 /* GLOBAL */
-h1, h2, h3, h4, h5, h6, p, li {
+h1, h2, h3, h4, h5, h6, p, label, li {
     font-family: Helvetica, Arial, sans-serif;
     color: black;
+}
+
+form {
+    display: table;
+}
+
+form > .form-field {
+    display: block;
+    margin-top: 10px;
+}
+
+form label {
+    display: table-cell;
+}
+
+form input {
+    display: table-cell;
+    width: 90%;
+    max-width: 300px;
 }
 
 
@@ -29,4 +48,9 @@ h1, h2, h3, h4, h5, h6, p, li {
 .editor-articles__list-item:hover {
     background: dodgerblue;
     color: white;
+}
+
+#editor-update-form__markdown-content, #editor-create-form__markdown-content {
+    width: 80%;
+    max-width: 900px;
 }
