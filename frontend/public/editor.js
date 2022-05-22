@@ -14,7 +14,8 @@ function main() {
 
 class EditorArticles {
     _ELEMENT_ID = 'editor-articles';
-    _EDITOR_ARTICLES_LIST_ID = 'editor-articles__list';
+    _LIST_ID = 'editor-articles-list';
+    _MESSAGE_ID = 'editor-articles-message';
 
     constructor(apiClient, editor) {
         this._editor = editor;
@@ -24,26 +25,47 @@ class EditorArticles {
         this._client = apiClient;
 
         this.element = document.getElementById(this._ELEMENT_ID);
+        this.listElement = document.getElementById(this._LIST_ID);
+        this.messageElement = document.getElementById(this._MESSAGE_ID);
 
         // BIND
-        // this.xx.bind(this);
-        // this.xx.bind(this);
-        // this.xx.bind(this);
+        this.fetch.bind(this);
+        this.show.bind(this);
+        this.hide.bind(this);
     }
 
     fetch() {
         // Fetch and populate articles listing
         this._client.getArticlesListing()
             .then(articlesListingData => {
+                if (articlesListingData.length == 0) {
+                    // Clearing list contents
+                    this.listElement.innerHTML = '';
+                    this.messageElement.textContent = 'No Articles Yet!'
+                    return;
+                } else {
+                    this.messageElement.textContent = '';
+                }
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
                     const { articleId } = articleData;
                     const listItem = new EditorArticleListItem(articleId, articleData, this._editor._onClickUpdateButton);
                     fragment.appendChild(listItem.element);
                 })
-                this.element.appendChild(fragment);
+                // Clearing list contents
+                this.listElement.innerHTML = '';
+                // Adding new contents
+                this.listElement.appendChild(fragment);
             })
             .catch(err => alert(err));
+    }
+
+    show() {
+        showElement(this.element);
+    }
+
+    hide() {
+        hideElement(this.element);
     }
 }
 
@@ -82,11 +104,11 @@ class EditorArticleListItem {
 
 class EditorUpdateForm {
     _ELEMENT_ID = 'editor-update-form';
-    _FORM_TITLE_CLASS = 'editor-update-form__title';
-    _FORM_AUTHOR_CLASS = 'editor-update-form__author';
-    _FORM_DATE_CREATED_CLASS = 'editor-update-form__date-created';
-    _FORM_DATE_UPDATED_CLASS = 'editor-update-form__date-updated';
-    _FORM_MARKDOWN_CONTENT_CLASS = 'editor-update-form__markdown-content';
+    _TITLE_ID = 'editor-update-form__title';
+    _AUTHOR_ID = 'editor-update-form__author';
+    _DATE_CREATED_ID = 'editor-update-form__date-created';
+    _DATE_UPDATED_ID = 'editor-update-form__date-updated';
+    _MARKDOWN_CONTENT_ID = 'editor-update-form__markdown-content';
 
     constructor(apiClient, editor) {
         this._editor = editor;
@@ -94,23 +116,20 @@ class EditorUpdateForm {
             apiClient = new APIClient();
         }
         this._client = apiClient;
+        this.articleId = null;
+
         this.element = document.getElementById(this._ELEMENT_ID);
+        this.title_element = document.getElementById(this._TITLE_ID);
+        this.author_element = document.getElementById(this._AUTHOR_ID);
+        this.dateCreated_element = document.getElementById(this._DATE_CREATED_ID);
+        this.dateUpdated_element = document.getElementById(this._DATE_UPDATED_ID);
+        this.markdownContent_element = document.getElementById(this._MARKDOWN_CONTENT_ID);
 
         // BIND
-        this.show.bind(this);
-        this.hide.bind(this);
         this.fetch.bind(this);
         this.populate.bind(this);
-        // this.xx.bind(this);
-        // this.xx.bind(this);
-    }
-
-    show() {
-        showElement(this.element);
-    }
-
-    hide() {
-        hideElement(this.element);
+        this.show.bind(this);
+        this.hide.bind(this);
     }
 
     fetch(articleId) {
@@ -123,7 +142,21 @@ class EditorUpdateForm {
     }
 
     populate(articleData) {
-        // TODO: Populate the form
+        const { id, author, title, dateCreated, dateUpdated, markdownContent } = articleData;
+        this.articleId = id;
+        this.title_element.textContent = title;
+        this.author_element.textContent = author;
+        this.dateCreated_element.textContent = (new Date(dateCreated)).toLocaleString();
+        this.dateUpdated_element.textContent = (new Date(dateUpdated)).toLocaleString();
+        this.markdownContent_element.value = markdownContent;
+    }
+
+    show() {
+        showElement(this.element);
+    }
+
+    hide() {
+        hideElement(this.element);
     }
 }
 

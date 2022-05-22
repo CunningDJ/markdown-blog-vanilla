@@ -3,7 +3,7 @@
  */
 (function () {
 function main() {
-    const apiClient = APIClient();
+    const apiClient = new APIClient();
     const homeApp = new HomeApp(apiClient);
     homeApp.fetchArticles();
 }
@@ -22,6 +22,8 @@ class HomeArticle {
         this.dateCreated_element = document.getElementById(this._DATE_CREATED_ID);
         this.body_element = document.getElementById(this._BODY_ID);
 
+        this.articleId = null;
+
         // Showdown (Markdown) Converter
         this._showdownConverter = new showdown.Converter();
 
@@ -33,6 +35,7 @@ class HomeArticle {
 
     populateShow(articleData) {
         const { id, title, author, dateCreated, dateUpdated, markdownContent } = articleData;
+        this.articleId = id;
         this.title_element.textContent = title;
         this.author_element.textContent = author;
         this.dateCreated_element.textContent = (new Date()).toLocaleString();
@@ -50,10 +53,16 @@ class HomeArticle {
 }
 
 class ArticlesListing {
-    _ELEMENT_ID = 'home-articles-listing';
+    _ELEMENT_ID = 'home-articles';
+    _LISTING_ID = 'home-articles-list'
+    _MESSAGE_ID = 'home-articles-list__message';
 
     constructor(apiClient, homeApp) {
         this._homeApp = homeApp;
+        this.element = document.getElementById(this._ELEMENT_ID);
+        this.listElement = document.getElementById(this._LISTING_ID);
+        this.messageElement = document.getElementById(this._MESSAGE_ID);
+
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
         }
@@ -68,14 +77,24 @@ class ArticlesListing {
     fetch() {
         this._client.getArticlesListing()
             .then(articlesListingData => {
+                if (articlesListingData.length == 0) {
+                    // Clearing list contents
+                    this.listElement.innerHTML = '';
+                    this.messageElement.textContent = 'No Articles Yet!'
+                    return;
+                } else {
+                    this.messageElement.textContent = '';
+                }
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
+                    // Could also diff date updated with currently listed items' date updated if the home page has an internal
+                    //   refresh button or some other re-fetch mechanism
                     const articleListItem = new ArticleListItem(articleId, articleData, this._homeApp._onClickArticleListItem);
                     fragment.appendChild(articleListItem.element);
                 });
                 // Clearing out old listing
-                this.innerHTML = '';
-                this.element.appendChild(fragment);
+                this.listElement.innerHTML = '';
+                this.listElement.appendChild(fragment);
             })
     }
 
@@ -125,7 +144,7 @@ class HomeApp {
         }
         this._client = apiClient;
 
-        this.articleListingComponent = new ArticlesListing(this);
+        this.articlesListingComponent = new ArticlesListing(apiClient, this);
         this.articleComponent = new HomeArticle(this);
 
         // BIND

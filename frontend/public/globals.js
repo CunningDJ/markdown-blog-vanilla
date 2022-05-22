@@ -17,7 +17,7 @@ class APIClient {
     constructor() {
         // Caching the API Base URL
         this._API_BASE_URL = this._getApiBaseUrl();
-        this._API_ARTICLES_URL = `${_API_BASE_URL}/articles`;
+        this._API_ARTICLES_URL = `${this._API_BASE_URL}/articles`;
 
         // BIND
         this.getArticlesListing.bind(this);
