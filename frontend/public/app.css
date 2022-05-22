@@ -1,0 +1,32 @@
+/* GLOBAL */
+h1, h2, h3, h4, h5, h6, p, li {
+    font-family: Helvetica, Arial, sans-serif;
+    color: black;
+}
+
+
+
+/* HOME */
+.home-articles-listing__list-item {
+    display: block;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    margin: 10px;
+    padding: 5px;
+}
+
+/* EDITOR */
+.editor-articles__list-item {
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    margin: 10px;
+    padding: 5px;
+}
+
+.editor-articles__list-item:hover {
+    background: dodgerblue;
+    color: white;
+}
