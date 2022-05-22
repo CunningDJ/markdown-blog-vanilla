@@ -48,7 +48,7 @@ class EditorArticles {
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
                     const { articleId } = articleData;
-                    const listItem = new EditorArticleListItem(articleId, articleData, this._editor._onClickUpdateButton);
+                    const listItem = new EditorArticleListItem(articleId, articleData, this._editor._onClickUpdateButton.bind(this));
                     fragment.appendChild(listItem.element);
                 })
                 // Clearing list contents
@@ -89,7 +89,7 @@ class EditorArticleListItem {
         const dateCreatedElement = document.createElement('p');
         dateCreatedElement.textContent = (new Date(dateCreated)).toLocaleString();
 
-        // UPDATE Button Element
+        // Update Button Element
         const updateButtonElement = document.createElement('button');
         updateButtonElement.textContent = 'UPDATE';
         updateButtonElement.onclick = e => onClickUpdate(e, articleId);
@@ -165,7 +165,8 @@ class EditorCreateForm {
     _FORM_AUTHOR_CLASS = 'editor-create-form__author';
     _FORM_MARKDOWN_CONTENT_CLASS = 'editor-create-form__markdown-content';
 
-    constructor(apiClient) {
+    constructor(apiClient, editor) {
+        this._editor = editor;
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
         }
@@ -175,9 +176,6 @@ class EditorCreateForm {
         // BIND
         this.show.bind(this);
         this.hide.bind(this);
-        // this.xx.bind(this);
-        // this.xx.bind(this);
-        // this.xx.bind(this);
     }
 
     show() {
@@ -195,6 +193,7 @@ class NewArticleButton {
     constructor(onclick) {
         this._editor;
         this.element = document.getElementById(this._ELEMENT_ID);
+        this.element.onclick = onclick;
     }
 }
 
@@ -205,7 +204,7 @@ class Editor {
             apiClient = new APIClient();
         }
         this._client = apiClient;
-        this.newArticleButtonComponent = new NewArticleButton(this._onClickNewArticleButton);
+        this.newArticleButtonComponent = new NewArticleButton(this._onClickNewArticleButton.bind(this));
         this.articlesComponent = new EditorArticles(this._client, this);
         this.updateFormComponent = new EditorUpdateForm(this._client, this);
         this.createFormComponent = new EditorCreateForm(this._client, this);
@@ -214,7 +213,6 @@ class Editor {
         this.fetchArticles.bind(this);
         this._onClickUpdateButton.bind(this);
         this._onClickNewArticleButton.bind(this);
-        // this.xx.bind(this);
     }
 
     fetchArticles() {
@@ -230,7 +228,7 @@ class Editor {
     _onClickNewArticleButton(e) {
         e.preventDefault();
         // TODO: Mechanism for asking if they want to save? Diff articleData state for update form?
-        this.updateForm.component.hide();
+        this.updateFormComponent.hide();
         this.createFormComponent.show();
     }
 }

@@ -88,7 +88,7 @@ class ArticlesListing {
                 articlesListingData.forEach(articleData => {
                     // Could also diff date updated with currently listed items' date updated if the home page has an internal
                     //   refresh button or some other re-fetch mechanism
-                    const articleListItem = new ArticleListItem(articleId, articleData, this._homeApp._onClickArticleListItem);
+                    const articleListItem = new ArticleListItem(articleId, articleData, this._homeApp._onClickArticleListItem.bind(this));
                     fragment.appendChild(articleListItem.element);
                 });
                 // Clearing out old listing

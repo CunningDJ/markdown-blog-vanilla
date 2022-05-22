@@ -6,7 +6,7 @@ function showElement(el, displayType) {
     if (typeof displayType == 'undefined') {
         displayType = 'block';
     }
-    this.element.style.display = displayType;
+    el.style.display = displayType;
 }
 
 function hideElement(el) {
