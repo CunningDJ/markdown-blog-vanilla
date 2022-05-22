@@ -4,13 +4,18 @@
     <title>Markdown Blog</title>
 
     <!-- STYLE -->
-    <link rel="stylesheet" src="/apps.css">
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-    <h1>Articles</h1>
-    <div id="home-articles-listing"></div>
+    <h1>Markdown Blog</h1>
+
+    <div id="home-articles">
+        <h1>Articles</h1>
+        <p id="home-articles-list__message"></p>
+        <ul id="home-articles-list"></ul>
+    </div>
     <br/>
-    <div id="home-article" display="none">
+    <div id="home-article" style="display:none">
         <h1><span id="home-article__title"></span></h1>
         <p><span id="home-article__author"></span></p>
         <p><span id="home-article__date-created"></span></p>
@@ -19,7 +24,7 @@
 
 
     <!-- SCRIPTS: VENDOR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/<version>/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <!-- SCRIPTS: WEBSITE -->
     <script src="/globals.js"></script>

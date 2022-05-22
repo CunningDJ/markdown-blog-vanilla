@@ -4,22 +4,24 @@
     <title>Markdown Blog: Editor</title>
 
     <!-- STYLE -->
-    <link rel="stylesheet" src="/apps.css">
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
     <div id="editor">
+        <h1>Markdown Blog: Editor</h1>
+
         <button id="editor-new-article-button">NEW ARTICLE</button>
 
         <!-- ARTICLES TO EDIT LISTING -->
         <div id="editor-articles">
-            <ul id="editor-articles__list">
-
-            </ul>
+            <h1>Articles</h1>
+            <p id="editor-articles-message"></p>
+            <ul id="editor-articles-list"></ul>
         </div>
 
     
         <!-- ARTICLE CREATE Form -->
-        <form id="editor-create-form" action="http://localhost:8081/api/articles" method="POST" display="none">
+        <form id="editor-create-form" action="http://localhost:8081/api/articles" method="POST" style="display:none">
             <label for="editor-create-form__title">Title</label>
             <input type="text" id="editor-create-form__title" name="title">
             <br/>
@@ -37,7 +39,7 @@
         <!-- ARTICLE UPDATE Form -->
         <div id="article-editor-update">
         <!-- TODO: Update the action to use :articleId (this doesn't work as is) or move action logic to JS -->
-        <form id="editor-update-form" action="http://localhost:8081/api/articles/:articleId" method="PUT" display="none">
+        <form id="editor-update-form" action="http://localhost:8081/api/articles/:articleId" method="PUT" style="display:none">
             <label for="editor-update-form__title">Title</label>
             <input type="text" id="editor-update-form__title" name="title">
             <br/>
@@ -62,7 +64,7 @@
 
 
     <!-- SCRIPTS: VENDOR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/<version>/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <!-- SCRIPTS: WEBSITE -->
     <script src="/globals.js"></script>
