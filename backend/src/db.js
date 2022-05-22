@@ -40,21 +40,30 @@ function queryPromise(...args) {
     });
 }
 
-export function getArticlesListing() {
+function getArticlesListing() {
     return queryPromise(ARTICLES_LISTING_QUERY);
 }
 
-export function getArticle(articleId) {
+function getArticle(articleId) {
     return queryPromise(ARTICLE_ID_QUERY, [articleId]);
 }
 
-export function editArticle(articleId, articleData) {
+function editArticle(articleId, articleData) {
     const { author, title, markdownContent } = articleData;
     return queryPromise(EDIT_ARTICLE_ID_QUERY, [articleId, author, title, markdownContent]);
 
 }
 
-export function createArticle(articleData) {
+function createArticle(articleData) {
     const { title, author, markdownContent } = articleData;
     return queryPromise(CREATE_ARTICLE_QUERY, [title, author, markdownContent]);
 }
+
+
+// EXPORTS
+module.exports = {
+    getArticlesListing,
+    getArticle,
+    editArticle,
+    createArticle
+};
