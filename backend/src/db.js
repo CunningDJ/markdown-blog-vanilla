@@ -35,7 +35,13 @@ const EDIT_ARTICLE_ID_QUERY = `UPDATE ${ARTICLE_TABLE}
     WHERE id = ($1)::uuid`;
 
 const CREATE_ARTICLE_QUERY = `INSERT INTO ${ARTICLE_TABLE}
-    (title, author, marKdown_content) VALUES ($1, $2, $3)`;
+    (title, author, marKdown_content) VALUES ($1, $2, $3)
+RETURNING
+    id, author, title,
+    markdown_content as "markdownContent",
+    date_created as "dateCreated",
+    date_updated as "dateUpdated"
+`;
 
 // QUERY FUNCTIONS
 function queryPromise(...args) {
@@ -49,12 +55,23 @@ function queryPromise(...args) {
     });
 }
 
+function queryPromiseOneRow(...args) {
+    return new Promise((accept, reject) => {
+        POOL.query(...args, (err, res) => {
+            if (err) {
+                return reject(err);
+            }
+            return accept(res.rows[0]);
+        });
+    });
+}
+
 function getArticlesListing() {
     return queryPromise(GET_ARTICLES_LISTING_QUERY);
 }
 
 function getArticle(articleId) {
-    return queryPromise(GET_ARTICLE_ID_QUERY, [articleId]);
+    return queryPromiseOneRow(GET_ARTICLE_ID_QUERY, [articleId]);
 }
 
 function editArticle(articleId, articleData) {
@@ -65,7 +82,7 @@ function editArticle(articleId, articleData) {
 
 function createArticle(articleData) {
     const { title, author, markdownContent } = articleData;
-    return queryPromise(CREATE_ARTICLE_QUERY, [title, author, markdownContent]);
+    return queryPromiseOneRow(CREATE_ARTICLE_QUERY, [title, author, markdownContent]);
 }
 
 

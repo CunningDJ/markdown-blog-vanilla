@@ -32,8 +32,8 @@ articlesRouter.get(ARTICLES_PATH, (req, res, next) => {
 articlesRouter.get(ARTICLE_ID_PATH, (req, res, next) => {
     const { articleId } = req.params;
     getArticle(articleId)
-        .then(rows => {
-            return res.json({ data: rows[0] })
+        .then(row => {
+            return res.json({ data: row })
         })
         .catch(err => res.json({ err }))
 });
@@ -58,8 +58,8 @@ articlesRouter.post(ARTICLES_PATH, (req, res, next) => {
 
     // TODO: insert in postgres
     createArticle(articleData)
-        .then(sqlResponse => {
-            return res.json({ data: sqlResponse })
+        .then(row => {
+            return res.json({ data: row })
         })
         .catch(err => res.json({ err }))
 });
