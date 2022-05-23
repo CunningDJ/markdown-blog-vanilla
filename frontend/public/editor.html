@@ -48,8 +48,10 @@
         <!-- TODO: Update the action to use :articleId (this doesn't work as is) or move action logic to JS -->
         <form id="editor-update-form" style="display:none">
             <h1>Edit Article</h1>
-            <p>Date Created: <span id="editor-update-form__date-created"></span></p>
-            <p>Date Updated: <span id="editor-update-form__date-updated"></span></p>
+            <div class="metadata-box">
+                <p>Date Created: <span id="editor-update-form__date-created"></span></p>
+                <p>Date Updated: <span id="editor-update-form__date-updated"></span></p>
+            </div>
             <span class="form-field">
                 <label for="editor-update-form__title">Title</label>
                 <input type="text" id="editor-update-form__title" name="title">

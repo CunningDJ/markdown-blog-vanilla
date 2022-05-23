@@ -25,6 +25,16 @@ button a {
 }
 
 /** NAV BAR */
+.nav-bar {
+    width: 100%;
+    background-color: slategray;
+    padding-left: 5px;
+}
+
+.nav-bar h1 {
+    color: white;
+}
+
 .nav-bar > * {
     display: inline-block;
     margin-right: 10px;
@@ -91,25 +101,29 @@ form input {
     margin: 10px auto 0px auto;
 }
 
-.article__metadata-box {
+.article__author, .article__date-created, .article__date-updated {
+    color: #ddd;
+}
+
+/** METADATA BOX */
+.metadata-box {
     border-style: solid;
     border-width: 1px;
     border-color: black;
     border-radius: 3px;
     background-color: slategray;
-    padding: 3px;
+    padding: 5px;
     max-width: 300px;
     margin-left: 0px;
 }
 
-.article__metadata-box * {
+.metadata-box > * {
+    margin: 0px auto;
+}
+
+.metadata-box * {
     color: white;
 }
-
-.article__author, .article__date-created {
-    color: #ddd;
-}
-
 
 /* HOME */
 .home-articles__list-item {
