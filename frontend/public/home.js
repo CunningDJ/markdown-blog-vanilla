@@ -46,6 +46,7 @@ class HomeArticle {
         // Put content in article body
         this.body_element.innerHTML = convertedContent;
         showElement(this.element);
+        pushStateArticlePath(this.articleId);
     }
 
     hide() {
@@ -142,7 +143,30 @@ class ArticleListItem {
     }
 }
 
+class HomeBackButton {
+    _CSS_CLASS = 'home__back-button';
+
+    constructor(onclick) {
+        this.element = document.getElementById(this._CSS_CLASS);
+        this.element.onclick = onclick;
+
+        // BIND
+        this.show.bind(this);
+        this.hide.bind(this);
+    }
+
+    show() {
+        showElementRemoveDisplay(this.element);
+    }
+
+    hide() {
+        hideElement(this.element);
+    }
+}
+
 class HomeApp {
+    _BACK_BUTTON_CSS_CLASS = 'home__back-button';
+
     constructor(apiClient) {
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
@@ -151,6 +175,7 @@ class HomeApp {
 
         this.articlesListingComponent = new ArticlesListing(apiClient, this._onClickArticleListItem.bind(this));
         this.articleComponent = new HomeArticle(this);
+        this.backButtonComponent = new HomeBackButton(this._onClickBackButton.bind(this));
 
         // BIND
         this.fetchArticles.bind(this);
@@ -158,25 +183,18 @@ class HomeApp {
         this.showArticlesListing.bind(this);
         this.populateShowArticle.bind(this);
         this.hideArticle.bind(this);
+        this.selectArticle.bind(this);
         this._onClickArticleListItem.bind(this);
-        // this.xx.bind(this);
+        this._onClickBackButton.bind(this);
     }
 
-    _onClickArticleListItem(e, articleId) {
-        this._client.getArticle(articleId)
-            .then(articleData => {
-                this.articleComponent.populateShow(articleData);
-                this.articlesListingComponent.hide();
-            })
-            .catch(err => alert(err));
-    }
 
     fetchArticles() {
         this.articlesListingComponent.fetch();
     }
 
     hideArticlesListing() {
-        this.articlesListing.hide();
+        this.articlesListingComponent.hide();
     }
 
     showArticlesListing() {
@@ -194,6 +212,28 @@ class HomeApp {
 
     hideArticle() {
         this.articleComponent.hide();
+    }
+
+    selectArticle(articleId, articleData) {
+        this.articleComponent.populateShow(articleData)
+        this.articlesListingComponent.hide();
+        pushStateArticlePath(articleId);
+        this.backButtonComponent.show();
+    }
+
+    // "private"
+    _onClickArticleListItem(e, articleId) {
+        this._client.getArticle(articleId)
+            .then(articleData => this.selectArticle(articleId, articleData))
+            .catch(err => alert(err));
+    }
+
+    _onClickBackButton(e) {
+        e.preventDefault();
+        replaceStateHomePath();
+        this.hideArticle();
+        this.backButtonComponent.hide();
+        this.showArticlesListing();
     }
 }
 

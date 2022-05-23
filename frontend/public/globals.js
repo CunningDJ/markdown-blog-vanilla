@@ -8,11 +8,31 @@ const CSS_CLASSES = {
     ARTICLE: 'article'
 };
 
+function _replaceState(state, url) {
+    history.replaceState(state, '', url);
+}
+
+function _pushState(state, url) {
+    history.pushState(state, '', url);
+}
+
+function replaceStateHomePath() {
+    _replaceState({}, '/');
+}
+
+function pushStateArticlePath(articleId) {
+    _pushState({}, `/article/${articleId}`)
+}
+
 function showElement(el, displayType) {
     if (typeof displayType == 'undefined') {
         displayType = 'block';
     }
     el.style.display = displayType;
+}
+
+function showElementRemoveDisplay(el) {
+    el.style.removeProperty('display');
 }
 
 function hideElement(el) {
