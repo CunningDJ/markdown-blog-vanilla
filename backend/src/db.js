@@ -20,22 +20,24 @@ const GET_ARTICLES_LISTING_QUERY = `SELECT
     date_created as "dateCreated",
     date_updated as "dateUpdated"
 from ${ARTICLE_TABLE}`;
+
 const GET_ARTICLE_ID_QUERY = `SELECT
     id, author, title,
     markdown_content as "markdownContent",
     date_created as "dateCreated",
     date_updated as "dateUpdated"
-from ${ARTICLE_TABLE} WHERE id=$1`;
+from ${ARTICLE_TABLE}
+WHERE id=($1)::uuid`;
+
 const EDIT_ARTICLE_ID_QUERY = `UPDATE ${ARTICLE_TABLE}
     set author = $2,
         title = $3,
         markdown_content = $4,
         date_updated = now()
-    WHERE id = $1
-`;
+    WHERE id = ($1)::uuid`;
+
 const CREATE_ARTICLE_QUERY = `INSERT INTO ${ARTICLE_TABLE}
-    (title, author, marKdown_content) VALUES ($1, $2, $3)
-`;
+    (title, author, marKdown_content) VALUES ($1, $2, $3)`;
 
 // QUERY FUNCTIONS
 function queryPromise(...args) {
@@ -54,6 +56,8 @@ function getArticlesListing() {
 }
 
 function getArticle(articleId) {
+    console.log(GET_ARTICLE_ID_QUERY);
+    console.log([articleId]);
     return queryPromise(GET_ARTICLE_ID_QUERY, [articleId]);
 }
 

@@ -23,9 +23,6 @@ const articlesRouter = express.Router();
 articlesRouter.get(ARTICLES_PATH, (req, res, next) => {
     getArticlesListing()
         .then(rows => {
-            // TODO: remove
-            console.log('GET Articles:');
-            console.log(rows);
             return res.json({ data: rows })
         })
         .catch(err => res.json({ err }))
