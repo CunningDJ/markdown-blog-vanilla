@@ -15,8 +15,17 @@ const POOL = new Pool(DB_CONFIG);
 const ARTICLE_TABLE = 'article';
 
 // PSQL QUERY STRINGS
-const GET_ARTICLES_LISTING_QUERY = `SELECT id, author, title, date_created, date_updated from ${ARTICLE_TABLE}`;
-const GET_ARTICLE_ID_QUERY = `SELECT id, author, title, markdown_content, date_created, date_updated from ${ARTICLE_TABLE} WHERE id=$1`;
+const GET_ARTICLES_LISTING_QUERY = `SELECT
+    id, author, title,
+    date_created as "dateCreated",
+    date_updated as "dateUpdated"
+from ${ARTICLE_TABLE}`;
+const GET_ARTICLE_ID_QUERY = `SELECT
+    id, author, title,
+    markdown_content as "markdownContent",
+    date_created as "dateCreated",
+    date_updated as "dateUpdated"
+from ${ARTICLE_TABLE} WHERE id=$1`;
 const EDIT_ARTICLE_ID_QUERY = `UPDATE ${ARTICLE_TABLE}
     set author = $2,
         title = $3,
@@ -56,8 +65,6 @@ function editArticle(articleId, articleData) {
 
 function createArticle(articleData) {
     const { title, author, markdownContent } = articleData;
-    console.log(`CREATE ARTICLE QUERY: ${CREATE_ARTICLE_QUERY}`);
-    console.log([title, author, markdownContent]);
     return queryPromise(CREATE_ARTICLE_QUERY, [title, author, markdownContent]);
 }
 
