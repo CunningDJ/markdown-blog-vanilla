@@ -77,8 +77,9 @@ class APIClient {
         if (window.location.hostname == 'localhost') {
             apiBase = 'http://localhost:8081';
         } else {
-            // TODO: Can set your prod URL here
-            apiBase = 'http://xyz';
+            // Assumes that if not on localhost, API will have same host
+            // TODO: Update the domain your prod API is served on here if different from web page domain
+            apiBase = window.location.host;
         }
         apiBase = `${apiBase}/api`;
         return apiBase;
