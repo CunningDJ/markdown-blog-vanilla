@@ -1,8 +1,6 @@
 
 const { Pool, Client } = require('pg');
 
-// const client = new Client();
-// await client.connect();
 const DBNAME = 'markdownblog';
 
 const DB_CONFIG = {
@@ -56,8 +54,6 @@ function getArticlesListing() {
 }
 
 function getArticle(articleId) {
-    console.log(GET_ARTICLE_ID_QUERY);
-    console.log([articleId]);
     return queryPromise(GET_ARTICLE_ID_QUERY, [articleId]);
 }
 
