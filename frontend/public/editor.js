@@ -304,6 +304,7 @@ class Editor {
                 console.log(`SUCCESS! Updating fields. Data: ${JSON.stringify(data)}`);
                 // Fetching updated data
                 this.updateFormComponent.fetch(articleId);
+                this.articlesComponent.fetch();
             })
             .catch(err => alert(JSON.stringify(err)));
     }
