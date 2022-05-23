@@ -4,8 +4,7 @@
 
 // CSS CLASSES
 const CSS_CLASSES = {
-    LIST_ITEM: 'list-item',
-    ARTICLE: 'article'
+    LIST_ITEM: 'list-item'
 };
 
 function _replaceState(state, url) {

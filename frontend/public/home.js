@@ -26,8 +26,6 @@ class HomeArticle {
 
         this.articleId = null;
 
-        this.element.classList.add(CSS_CLASSES.ARTICLE);
-
         // Showdown (Markdown) Converter
         this._showdownConverter = new showdown.Converter();
 

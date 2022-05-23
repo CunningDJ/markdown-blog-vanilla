@@ -67,14 +67,19 @@ form input {
     max-width: 300px;
 }
 
-/** List Item */
+/** Articles List & Items */
+.articles-list {
+    padding: inherit;
+}
+
 .list-item {
     border-style: solid;
     border-width: 1px;
     border-color: black;
     border-radius: 3px;
-    margin: 10px;
+    margin: 10px 10px 10px 0px;
     padding: 5px;
+    min-width: 30%;
 }
 
 .list-item > * {
@@ -129,10 +134,10 @@ form input {
 /* HOME */
 .home-articles__list-item {
     display: block;
+    width: 80%;
 }
 
 /* EDITOR */
 .editor-articles__list-item {
     display: inline-block;
-    min-width: 30%;
 }
