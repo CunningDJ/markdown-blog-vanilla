@@ -87,6 +87,7 @@ class EditorArticleListItem {
         this.data = articleData;
         this.element = document.createElement('div');
         this.element.classList.add(this._CSS_CLASS);
+        this.element.classList.add(CSS_CLASSES.LIST_ITEM);
         const { title, author, dateCreated, dateUpdated } = this.data;
         // Title Element
         this.titleElement = document.createElement('h2');
@@ -103,17 +104,14 @@ class EditorArticleListItem {
         this.dateCreatedElement.textContent = (new Date(dateCreated)).toLocaleString();
         this.dateCreatedElement.classList.add(this._DATE_CREATED_CLASS);
 
+        // On Click
         this.element.onclick = e => onclick(e, this.articleId);
 
-        // // Update Button Element
-        // const updateButtonElement = document.createElement('button');
-        // updateButtonElement.textContent = 'UPDATE';
-        // updateButtonElement.onclick = e => onClickUpdate(e, articleId);
-
-        this.element.appendChild(this.titleElement);
-        this.element.appendChild(this.authorElement);
-        this.element.appendChild(this.dateCreatedElement);
-        // this.element.appendChild(updateButtonElement);
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(this.titleElement);
+        fragment.appendChild(this.authorElement);
+        fragment.appendChild(this.dateCreatedElement);
+        this.element.append(fragment);
     }
 }
 

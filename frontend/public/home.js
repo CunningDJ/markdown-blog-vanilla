@@ -24,13 +24,14 @@ class HomeArticle {
 
         this.articleId = null;
 
+        this.element.classList.add(CSS_CLASSES.ARTICLE);
+
         // Showdown (Markdown) Converter
         this._showdownConverter = new showdown.Converter();
 
         // BIND
         this.populateShow.bind(this);
         this.hide.bind(this);
-        // this.xx.bind(this);
     }
 
     populateShow(articleData) {
@@ -116,6 +117,7 @@ class ArticleListItem {
         this.data = articleData;
         this.element = document.createElement('div');
         this.element.classList.add(this._CSS_CLASS);
+        this.element.classList.add(CSS_CLASSES.LIST_ITEM);
         const { title, author, dateCreated, dateUpdated } = this.data;
         // Title Element
         const titleElement = document.createElement('h2');
@@ -132,9 +134,11 @@ class ArticleListItem {
         // On Click (Select Article)
         this.element.onclick = e => onClickListItem(e, articleId);
 
-        this.element.appendChild(titleElement);
-        this.element.appendChild(authorElement);
-        this.element.appendChild(dateCreatedElement);
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(titleElement);
+        fragment.appendChild(authorElement);
+        fragment.appendChild(dateCreatedElement);
+        this.element.appendChild(fragment);
     }
 }
 

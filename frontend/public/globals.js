@@ -2,6 +2,12 @@
  * MARKDOWN BLOG: GLOBAL VARIABLES, FUNCTIONS, and CLASSES
  */
 
+// CSS CLASSES
+const CSS_CLASSES = {
+    LIST_ITEM: 'list-item',
+    ARTICLE: 'article'
+};
+
 function showElement(el, displayType) {
     if (typeof displayType == 'undefined') {
         displayType = 'block';

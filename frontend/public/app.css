@@ -4,8 +4,14 @@ h1, h2, h3, h4, h5, h6, p, label, li {
     color: black;
 }
 
+/** Form */
 form {
     display: table;
+}
+
+form textarea {
+    width: 80%;
+    max-width: 900px;
 }
 
 form > .form-field {
@@ -23,21 +29,42 @@ form input {
     max-width: 300px;
 }
 
+/** List Item */
+.list-item {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 3px;
+    margin: 10px;
+    padding: 5px;
+}
 
+.list-item > * {
+    margin: 5px auto 0px auto;
+}
 
-/* HOME */
-#home-article {
+.list-item:hover {
+    background: slategray;
+    cursor: pointer;
+}
+
+.list-item:hover * {
+    color: white;
+}
+
+/** Article */
+.article {
     padding-left: 5px;
     padding-right: 5px;
     width: 100%;
     max-width: 1200px;
 }
 
-#home-article > * {
+.article > * {
     margin: 10px auto 0px auto;
 }
 
-#home-article-metadata-box {
+.article__metadata-box {
     border-style: solid;
     border-width: 1px;
     border-color: black;
@@ -48,55 +75,22 @@ form input {
     margin-left: 0px;
 }
 
-#home-article-metadata-box * {
+.article__metadata-box * {
     color: white;
 }
 
-#home-article__author, #home-article__date-created {
+.article__author, .article__date-created {
     color: #ddd;
 }
 
+
+/* HOME */
 .home-articles__list-item {
     display: block;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
-    border-radius: 3px;
-    margin: 10px;
-    padding: 5px;
-}
-
-.home-articles__list-item:hover {
-    background: dodgerblue;
-    color: white;
-}
-
-.home-articles__list-item > * {
-    margin: 5px auto 0px auto;
 }
 
 /* EDITOR */
 .editor-articles__list-item {
     display: inline-block;
     min-width: 30%;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
-    border-radius: 3px;
-    margin: 10px;
-    padding: 5px;
-}
-
-.editor-articles__list-item:hover {
-    background: dodgerblue;
-    color: white;
-}
-
-.editor-articles__list-item > * {
-    margin: 5px auto 0px auto;
-}
-
-#editor-update-form__markdown-content, #editor-create-form__markdown-content {
-    width: 80%;
-    max-width: 900px;
 }
