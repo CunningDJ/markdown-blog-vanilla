@@ -220,6 +220,7 @@ class EditorCreateForm {
         this.onClickCreate.bind(this);
         this.show.bind(this);
         this.hide.bind(this);
+        this.clear.bind(this);
     }
 
     onClickCreate(e) {
@@ -230,6 +231,12 @@ class EditorCreateForm {
             markdownContent: this.markdownContentElement.value
         };
         return this._onClickCreateButton(e, articleData);
+    }
+
+    clear() {
+        this.titleElement.value = '';
+        this.authorElement.value = '';
+        this.markdownContentElement.value = '';
     }
 
     show() {
@@ -301,6 +308,7 @@ class Editor {
 
         // BIND
         this.fetchArticles.bind(this);
+        this.populateShowUpdateForm.bind(this);
         this._onClickCreateButton.bind(this);
         this._onClickUpdateArticleButton.bind(this);
         this._onClickArticleListItem.bind(this);
@@ -314,15 +322,23 @@ class Editor {
         this.articlesComponent.fetch();
     }
 
+    populateShowUpdateForm(articleId, articleData) {
+        this.articlesComponent.hide();
+        this.createFormComponent.hide();
+        this.updateFormComponent.populate(articleData);
+        this._pushStateEditArticle(articleId);
+        this.updateFormComponent.show();
+        this.backButtonComponent.show();
+    }
+
     // "private"
     _onClickCreateButton(e, articleData) {
         e.preventDefault();
         this._client.createArticle(articleData)
             .then(data => {
                 const { id } = data;
-                console.log('CREATE SUCCESS!');
-                this.createFormComponent.hide();
-                this.updateFormComponent.fetch(id);
+                console.log(`CREATE SUCCESS! ID: ${id} (${JSON.stringify(data)})`);
+                this.populateShowUpdateForm(id, data);
             })
             .catch(err => alert(`CREATE ERROR: ${JSON.stringify(err,null,2)}`));
     }
@@ -344,12 +360,7 @@ class Editor {
         // TODO: List Item Open in Update Form
         this._client.getArticle(articleId)
             .then(data => {
-                this.articlesComponent.hide();
-
-                this.updateFormComponent.populate(data);
-                this._pushStateEditArticle(articleId);
-                this.updateFormComponent.show();
-                this.backButtonComponent.show();
+                this.populateShowUpdateForm(articleId, data)
             })
             .catch(err => alert(JSON.stringify(err)));
     }
@@ -361,6 +372,7 @@ class Editor {
 
         this.updateFormComponent.hide();
         this._pushStateNewArticle();
+        this.createFormComponent.clear();
         this.createFormComponent.show();
         this.backButtonComponent.show();
     }
