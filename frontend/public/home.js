@@ -15,6 +15,8 @@ class HomeArticle {
     _DATE_CREATED_ID = 'home-article__date-created';
     _BODY_ID = 'home-article__body';
 
+    _VIEW_ARTICLE_BASEPATH = '/article';
+
     constructor() {
         this.element = document.getElementById(this._ELEMENT_ID);
         this.title_element = document.getElementById(this._TITLE_ID);
@@ -32,9 +34,10 @@ class HomeArticle {
         // BIND
         this.populateShow.bind(this);
         this.hide.bind(this);
+        this._pushStateArticlePath.bind(this);
     }
 
-    populateShow(articleData) {
+    populateShow(articleId, articleData) {
         const { id, title, author, dateCreated, dateUpdated, markdownContent } = articleData;
         this.articleId = id;
         this.title_element.textContent = title;
@@ -46,14 +49,21 @@ class HomeArticle {
         // Put content in article body
         this.body_element.innerHTML = convertedContent;
         showElement(this.element);
-        pushStateArticlePath(this.articleId);
+        this._pushStateArticlePath(this.articleId);
     }
 
     hide() {
         hideElement(this.element);
     }
+
+    _pushStateArticlePath(articleId) {
+        _pushState({}, `${this._VIEW_ARTICLE_BASEPATH}/${articleId}`)
+    }
 }
 
+/*
+ * Articles Listing
+ */
 class ArticlesListing {
     _ELEMENT_ID = 'home-articles';
     _LISTING_ID = 'home-articles-list'
@@ -143,6 +153,9 @@ class ArticleListItem {
     }
 }
 
+/*
+ * Back Button (includes history.pushState)
+ */
 class HomeBackButton {
     _CSS_CLASS = 'home__back-button';
 
@@ -181,9 +194,8 @@ class HomeApp {
         this.fetchArticles.bind(this);
         this.hideArticlesListing.bind(this);
         this.showArticlesListing.bind(this);
-        this.populateShowArticle.bind(this);
+        this.fetchShowArticle.bind(this);
         this.hideArticle.bind(this);
-        this.selectArticle.bind(this);
         this._onClickArticleListItem.bind(this);
         this._onClickBackButton.bind(this);
     }
@@ -201,11 +213,12 @@ class HomeApp {
         this.articlesListingComponent.show();
     }
 
-    populateShowArticle(articleId) {
+    fetchShowArticle(articleId) {
         this._client.getArticle(articleId)
             .then(articleData => {
-                this.articleComponent.populate(articleData)
-                this.articleComponent.show();
+                this.articleComponent.populateShow(articleId, articleData);
+                this.articlesListingComponent.hide();
+                this.backButtonComponent.show();
             })
             .catch(err => alert(err));
     }
@@ -214,25 +227,16 @@ class HomeApp {
         this.articleComponent.hide();
     }
 
-    selectArticle(articleId, articleData) {
-        this.articleComponent.populateShow(articleData)
-        this.articlesListingComponent.hide();
-        pushStateArticlePath(articleId);
-        this.backButtonComponent.show();
-    }
-
     // "private"
     _onClickArticleListItem(e, articleId) {
-        this._client.getArticle(articleId)
-            .then(articleData => this.selectArticle(articleId, articleData))
-            .catch(err => alert(err));
+        this.fetchShowArticle(articleId);
     }
 
     _onClickBackButton(e) {
         e.preventDefault();
-        replaceStateHomePath();
         this.hideArticle();
         this.backButtonComponent.hide();
+        history.back();
         this.showArticlesListing();
     }
 }

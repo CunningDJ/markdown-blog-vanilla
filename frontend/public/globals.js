@@ -16,14 +16,6 @@ function _pushState(state, url) {
     history.pushState(state, '', url);
 }
 
-function replaceStateHomePath() {
-    _replaceState({}, '/');
-}
-
-function pushStateArticlePath(articleId) {
-    _pushState({}, `/article/${articleId}`)
-}
-
 function showElement(el, displayType) {
     if (typeof displayType == 'undefined') {
         displayType = 'block';
