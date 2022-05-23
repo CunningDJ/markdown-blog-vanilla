@@ -14,6 +14,9 @@ const app = express();
 // Allow ALL CORS Requests (should update to prod-specific)
 app.use(cors());
 
+// Process JSON body
+app.use(express.json());
+
 const articlesRouter = express.Router();
 
 // Get articles listing
@@ -53,8 +56,8 @@ articlesRouter.put(ARTICLE_ID_PATH, (req, res, next) => {
 
 // New article
 articlesRouter.post(ARTICLES_PATH, (req, res, next) => {
-    const { articleTitle, articleAuthor, articleContent } = req.body;
-    const articleData = { articleTitle, articleAuthor, articleContent };
+    const { title, author, markdownContent } = req.body;
+    const articleData = { title, author, markdownContent };
 
     // TODO: insert in postgres
     createArticle(articleData)

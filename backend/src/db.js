@@ -25,17 +25,17 @@ const EDIT_ARTICLE_ID_QUERY = `UPDATE ${ARTICLE_TABLE}
     WHERE id = $1
 `;
 const CREATE_ARTICLE_QUERY = `INSERT INTO ${ARTICLE_TABLE}
-    (title, author, mardown_content) VALUES ($1, $2, $3)
+    (title, author, marKdown_content) VALUES ($1, $2, $3)
 `;
 
 // QUERY FUNCTIONS
 function queryPromise(...args) {
-    return new Promise((success, fail) => {
+    return new Promise((accept, reject) => {
         POOL.query(...args, (err, res) => {
             if (err) {
-                return fail(err);
+                return reject(err);
             }
-            return success(res.rows);
+            return accept(res.rows);
         });
     });
 }
@@ -56,6 +56,8 @@ function editArticle(articleId, articleData) {
 
 function createArticle(articleData) {
     const { title, author, markdownContent } = articleData;
+    console.log(`CREATE ARTICLE QUERY: ${CREATE_ARTICLE_QUERY}`);
+    console.log([title, author, markdownContent]);
     return queryPromise(CREATE_ARTICLE_QUERY, [title, author, markdownContent]);
 }
 
