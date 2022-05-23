@@ -12,12 +12,16 @@ function main() {
     editor.fetchArticles();
 }
 
+
+/*
+ * EDITOR ARTICLES
+ */
 class EditorArticles {
     _ELEMENT_ID = 'editor-articles';
     _LIST_ID = 'editor-articles-list';
     _MESSAGE_ID = 'editor-articles-message';
 
-    constructor(apiClient, editor) {
+    constructor(apiClient, onClickArticleListItem) {
         this._editor = editor;
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
@@ -27,6 +31,8 @@ class EditorArticles {
         this.element = document.getElementById(this._ELEMENT_ID);
         this.listElement = document.getElementById(this._LIST_ID);
         this.messageElement = document.getElementById(this._MESSAGE_ID);
+
+        this._onClickArticleListItem = onClickArticleListItem;
 
         // BIND
         this.fetch.bind(this);
@@ -47,8 +53,8 @@ class EditorArticles {
                 this.messageElement.textContent = '';
                 const fragment = document.createDocumentFragment();
                 articlesListingData.forEach(articleData => {
-                    const { articleId } = articleData;
-                    const listItem = new EditorArticleListItem(articleId, articleData, this._editor._onClickUpdateButton.bind(this));
+                    const { id } = articleData;
+                    const listItem = new EditorArticleListItem(id, articleData, this._onClickArticleListItem);
                     fragment.appendChild(listItem.element);
                 })
                 // Clearing list contents
@@ -56,7 +62,7 @@ class EditorArticles {
                 // Adding new contents
                 this.listElement.appendChild(fragment);
             })
-            .catch(err => alert(err));
+            .catch(err => alert(JSON.stringify(err)));
     }
 
     show() {
@@ -68,39 +74,53 @@ class EditorArticles {
     }
 }
 
+
 class EditorArticleListItem {
     _CSS_CLASS = 'editor-articles__list-item';
+    _TITLE_CLASS = 'editor-articles__list-item-title';
+    _AUTHOR_CLASS = 'editor-articles__list-item-author';
+    _DATE_CREATED_CLASS = 'editor-articles__list-item-date-created';
+    _DATE_UPDATED_CLASS = 'editor-articles__list-item-date-updated';
 
-    constructor(articleId, articleData, onClickUpdate) {
+    constructor(articleId, articleData, onclick) {
         this.articleId = articleId;
         this.data = articleData;
         this.element = document.createElement('div');
         this.element.classList.add(this._CSS_CLASS);
         const { title, author, dateCreated, dateUpdated } = this.data;
         // Title Element
-        const titleElement = document.createElement('h2');
-        titleElement.textContent = title;
+        this.titleElement = document.createElement('h2');
+        this.titleElement.textContent = title;
+        this.titleElement.classList.add(this._TITLE_CLASS);
 
         // Author Element
-        const authorElement = document.createElement('p');
-        authorElement.textContent = author;
+        this.authorElement = document.createElement('p');
+        this.authorElement.textContent = author;
+        this.authorElement.classList.add(this._AUTHOR_CLASS);
 
         // Date Created Element
-        const dateCreatedElement = document.createElement('p');
-        dateCreatedElement.textContent = (new Date(dateCreated)).toLocaleString();
+        this.dateCreatedElement = document.createElement('p');
+        this.dateCreatedElement.textContent = (new Date(dateCreated)).toLocaleString();
+        this.dateCreatedElement.classList.add(this._DATE_CREATED_CLASS);
 
-        // Update Button Element
-        const updateButtonElement = document.createElement('button');
-        updateButtonElement.textContent = 'UPDATE';
-        updateButtonElement.onclick = e => onClickUpdate(e, articleId);
+        this.element.onclick = e => onclick(e, this.articleId);
 
-        this.element.appendChild(titleElement);
-        this.element.appendChild(authorElement);
-        this.element.appendChild(dateCreatedElement);
-        this.element.appendChild(updateButtonElement);
+        // // Update Button Element
+        // const updateButtonElement = document.createElement('button');
+        // updateButtonElement.textContent = 'UPDATE';
+        // updateButtonElement.onclick = e => onClickUpdate(e, articleId);
+
+        this.element.appendChild(this.titleElement);
+        this.element.appendChild(this.authorElement);
+        this.element.appendChild(this.dateCreatedElement);
+        // this.element.appendChild(updateButtonElement);
     }
 }
 
+
+/*
+ * EDITOR UPDATE FORM
+ */
 class EditorUpdateForm {
     _ELEMENT_ID = 'editor-update-form';
     _TITLE_ID = 'editor-update-form__title';
@@ -108,27 +128,32 @@ class EditorUpdateForm {
     _DATE_CREATED_ID = 'editor-update-form__date-created';
     _DATE_UPDATED_ID = 'editor-update-form__date-updated';
     _MARKDOWN_CONTENT_ID = 'editor-update-form__markdown-content';
+    _UPDATE_BUTTON_ID = 'editor-update-form__update-button';
 
-    constructor(apiClient, editor) {
-        this._editor = editor;
+    constructor(apiClient, onClickUpdateButton) {
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
         }
         this._client = apiClient;
         this.articleId = null;
+        this._onClickUpdateButtonParent = onClickUpdateButton;
 
         this.element = document.getElementById(this._ELEMENT_ID);
-        this.title_element = document.getElementById(this._TITLE_ID);
-        this.author_element = document.getElementById(this._AUTHOR_ID);
-        this.dateCreated_element = document.getElementById(this._DATE_CREATED_ID);
-        this.dateUpdated_element = document.getElementById(this._DATE_UPDATED_ID);
-        this.markdownContent_element = document.getElementById(this._MARKDOWN_CONTENT_ID);
+        this.titleElement = document.getElementById(this._TITLE_ID);
+        this.authorElement = document.getElementById(this._AUTHOR_ID);
+        this.dateCreatedElement = document.getElementById(this._DATE_CREATED_ID);
+        this.dateUpdatedElement = document.getElementById(this._DATE_UPDATED_ID);
+        this.markdownContentElement = document.getElementById(this._MARKDOWN_CONTENT_ID);
+
+        this.updateButtonElement = document.getElementById(this._UPDATE_BUTTON_ID);
+        this.updateButtonElement.onclick = this._onclickButton.bind(this);
 
         // BIND
         this.fetch.bind(this);
         this.populate.bind(this);
         this.show.bind(this);
         this.hide.bind(this);
+        this._onclickButton.bind(this);
     }
 
     fetch(articleId) {
@@ -137,17 +162,17 @@ class EditorUpdateForm {
             .then(articleData => {
                 this.populate(articleData)
             })
-            .catch(err => alert(err));
+            .catch(err => alert(JSON.stringify(err)));
     }
 
     populate(articleData) {
         const { id, author, title, dateCreated, dateUpdated, markdownContent } = articleData;
         this.articleId = id;
-        this.title_element.textContent = title;
-        this.author_element.textContent = author;
-        this.dateCreated_element.textContent = (new Date(dateCreated)).toLocaleString();
-        this.dateUpdated_element.textContent = (new Date(dateUpdated)).toLocaleString();
-        this.markdownContent_element.value = markdownContent;
+        this.titleElement.value = title;
+        this.authorElement.value = author;
+        this.dateCreatedElement.textContent = (new Date(dateCreated)).toLocaleString();
+        this.dateUpdatedElement.textContent = (new Date(dateUpdated)).toLocaleString();
+        this.markdownContentElement.value = markdownContent;
     }
 
     show() {
@@ -157,27 +182,58 @@ class EditorUpdateForm {
     hide() {
         hideElement(this.element);
     }
+
+    _onclickButton(e) {
+        e.preventDefault();
+        const articleData = {
+            title: this.titleElement.value,
+            author: this.authorElement.value,
+            markdownContent: this.markdownContentElement.value
+        };
+        return this._onClickUpdateButtonParent(e, this.articleId, articleData);
+    }
 }
 
+
+/*
+ * EDITOR CREATE FORM
+ */
 class EditorCreateForm {
     _ELEMENT_ID = 'editor-create-form';
-    _FORM_TITLE_CLASS = 'editor-create-form__title';
-    _FORM_AUTHOR_CLASS = 'editor-create-form__author';
-    _FORM_MARKDOWN_CONTENT_CLASS = 'editor-create-form__markdown-content';
+    _TITLE_ID = 'editor-create-form__title';
+    _AUTHOR_ID = 'editor-create-form__author';
+    _MARKDOWN_CONTENT_ID = 'editor-create-form__markdown-content';
+    _CREATE_BUTTON_ID = 'editor-create-form__create-button'
 
-    constructor(apiClient, editor) {
-        this._editor = editor;
+    constructor(apiClient, onClickCreateButton) {
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
         }
-        this._client = apiClient;
+        this._onClickCreateButton = onClickCreateButton;
         this.element = document.getElementById(this._ELEMENT_ID);
+        this.titleElement = document.getElementById(this._TITLE_ID);
+        this.authorElement = document.getElementById(this._AUTHOR_ID);
+        this.markdownContentElement = document.getElementById(this._MARKDOWN_CONTENT_ID);
+
+        this.createButtonElement = document.getElementById(this._CREATE_BUTTON_ID);
+        this.createButtonElement.onclick = this.onClickCreate.bind(this);
 
         // BIND
+        this.onClickCreate.bind(this);
         this.show.bind(this);
         this.hide.bind(this);
     }
 
+    onClickCreate(e) {
+        e.preventDefault();
+        const articleData = {
+            title: this.titleElement.value,
+            author: this.authorElement.value,
+            markdownContent: this.markdownContentElement.value
+        };
+        return this._onClickCreateButton(e, articleData);
+    }
+
     show() {
         showElement(this.element);
     }
@@ -187,6 +243,10 @@ class EditorCreateForm {
     }
 }
 
+
+/*
+ * NEW ARTICLE BUTTON
+ */
 class NewArticleButton {
     _ELEMENT_ID = 'editor-new-article-button';
 
@@ -198,6 +258,9 @@ class NewArticleButton {
 }
 
 
+/*
+ * EDITOR APP
+ */
 class Editor {
     constructor(apiClient) {
         if (typeof apiClient == 'undefined') {
@@ -205,13 +268,15 @@ class Editor {
         }
         this._client = apiClient;
         this.newArticleButtonComponent = new NewArticleButton(this._onClickNewArticleButton.bind(this));
-        this.articlesComponent = new EditorArticles(this._client, this);
-        this.updateFormComponent = new EditorUpdateForm(this._client, this);
-        this.createFormComponent = new EditorCreateForm(this._client, this);
+        this.articlesComponent = new EditorArticles(this._client, this._onClickArticleListItem.bind(this));
+        this.updateFormComponent = new EditorUpdateForm(this._client, this._onClickUpdateArticleButton.bind(this));
+        this.createFormComponent = new EditorCreateForm(this._client, this._onClickCreateButton.bind(this));
 
         // BIND
         this.fetchArticles.bind(this);
-        this._onClickUpdateButton.bind(this);
+        this._onClickCreateButton.bind(this);
+        this._onClickUpdateArticleButton.bind(this);
+        this._onClickArticleListItem.bind(this);
         this._onClickNewArticleButton.bind(this);
     }
 
@@ -220,9 +285,38 @@ class Editor {
     }
 
     // "private"
-    _onClickUpdateButton(e, articleId) {
+    _onClickCreateButton(e, articleData) {
         e.preventDefault();
-        // TODO: Update Article Button Click
+        this._client.createArticle(articleData)
+            .then(data => {
+                const { id } = data;
+                console.log('CREATE SUCCESS!');
+                this.createFormComponent.hide();
+                this.updateFormComponent.fetch(id);
+            })
+            .catch(err => alert(`CREATE ERROR: ${JSON.stringify(err,null,2)}`));
+    }
+
+    _onClickUpdateArticleButton(e, articleId, articleData) {
+        e.preventDefault();
+        this._client.updateArticle(articleId, articleData)
+            .then(data => {
+                console.log(`SUCCESS! Updating fields. Data: ${JSON.stringify(data)}`);
+                // Fetching updated data
+                this.updateFormComponent.fetch(articleId);
+            })
+            .catch(err => alert(JSON.stringify(err)));
+    }
+
+    _onClickArticleListItem(e, articleId) {
+        e.preventDefault();
+        // TODO: List Item Open in Update Form
+        this._client.getArticle(articleId)
+            .then(data => {
+                this.updateFormComponent.populate(data);
+                this.updateFormComponent.show();
+            })
+            .catch(err => alert(JSON.stringify(err)));
     }
 
     _onClickNewArticleButton(e) {

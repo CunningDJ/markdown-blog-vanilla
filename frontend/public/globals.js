@@ -24,8 +24,6 @@ class APIClient {
         this.getArticle.bind(this);
         this.createArticle.bind(this);
         this.updateArticle.bind(this);
-        // this.xx.bind(this);
-        // this.xx.bind(this);
 
         this._getApiBaseUrl.bind(this);
         this._getArticleIdUrl.bind(this);
@@ -37,24 +35,15 @@ class APIClient {
     }
     
     getArticle(articleId) {
-        return this._processErrDataAxiosResponse();
-        // return new Promise((accept, reject) => {
-        //     axios.get(this._getArticleIdUrl(articleId))
-        //         .then(res => accept(res.data))
-        //         .catch(err => reject(err));
-        // })
+        return this._processErrDataAxiosResponse(axios.get(this._getArticleIdUrl(articleId)));
     }
 
     createArticle(articleData) {
         // Only keeping these fields in case more are submitted
         const { author, title, markdownContent } = articleData;
         articleData = { author, title, markdownContent };
+
         return this._processErrDataAxiosResponse(axios.post(this._API_ARTICLES_URL, articleData));
-        // return new Promise((accept, reject) => {
-        //     axios.post(this._API_ARTICLES_URL, articleData)
-        //         .then(res => accept(res.data))
-        //         .catch(err => reject(err));
-        // });
     }
 
     updateArticle(articleId, articleData) {
@@ -62,11 +51,6 @@ class APIClient {
         const { author, title, markdownContent } = articleData;
         articleData = { author, title, markdownContent };
         return this._processErrDataAxiosResponse(axios.put(this._getArticleIdUrl(articleId), articleData));
-        // return new Promise((accept, reject) => {
-        //     axios.put(this._getArticleIdUrl(articleId), articleData)
-        //         .then(res => accept(res.data))
-        //         .catch(err => reject(err));
-        // })
     }
 
     // "private"
@@ -91,6 +75,7 @@ class APIClient {
             axiosPromise
                 .then(res => {
                     const { data, err } = res.data;
+                    // alert(`res.data: ${JSON.stringify(res.data, null, 2)}`)
                     if (err) {
                         return reject(err);
                     }

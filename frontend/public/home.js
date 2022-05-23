@@ -57,11 +57,12 @@ class ArticlesListing {
     _LISTING_ID = 'home-articles-list'
     _MESSAGE_ID = 'home-articles-list__message';
 
-    constructor(apiClient, homeApp) {
-        this._homeApp = homeApp;
+    constructor(apiClient, onClickListItem) {
         this.element = document.getElementById(this._ELEMENT_ID);
         this.listElement = document.getElementById(this._LISTING_ID);
         this.messageElement = document.getElementById(this._MESSAGE_ID);
+
+        this._onClickListItem = onClickListItem;
 
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
@@ -88,7 +89,8 @@ class ArticlesListing {
                 articlesListingData.forEach(articleData => {
                     // Could also diff date updated with currently listed items' date updated if the home page has an internal
                     //   refresh button or some other re-fetch mechanism
-                    const articleListItem = new ArticleListItem(articleId, articleData, this._homeApp._onClickArticleListItem.bind(this));
+                    const { id } = articleData;
+                    const articleListItem = new ArticleListItem(id, articleData, this._onClickListItem);
                     fragment.appendChild(articleListItem.element);
                 });
                 // Clearing out old listing
@@ -107,7 +109,7 @@ class ArticlesListing {
 }
 
 class ArticleListItem {
-    _CSS_CLASS = 'home-articles-listing__list-item';
+    _CSS_CLASS = 'home-articles__list-item';
 
     constructor(articleId, articleData, onClickListItem) {
         this.articleId = articleId;
@@ -143,7 +145,7 @@ class HomeApp {
         }
         this._client = apiClient;
 
-        this.articlesListingComponent = new ArticlesListing(apiClient, this);
+        this.articlesListingComponent = new ArticlesListing(apiClient, this._onClickArticleListItem.bind(this));
         this.articleComponent = new HomeArticle(this);
 
         // BIND
@@ -159,7 +161,8 @@ class HomeApp {
     _onClickArticleListItem(e, articleId) {
         this._client.getArticle(articleId)
             .then(articleData => {
-
+                this.articleComponent.populateShow(articleData);
+                this.articlesListingComponent.hide();
             })
             .catch(err => alert(err));
     }

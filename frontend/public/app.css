@@ -26,7 +26,37 @@ form input {
 
 
 /* HOME */
-.home-articles-listing__list-item {
+#home-article {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+#home-article > * {
+    margin: 10px auto 0px auto;
+}
+
+#home-article-metadata-box {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 3px;
+    background-color: slategray;
+    padding: 3px;
+    max-width: 300px;
+    margin-left: 0px;
+}
+
+#home-article-metadata-box * {
+    color: white;
+}
+
+#home-article__author, #home-article__date-created {
+    color: #ddd;
+}
+
+.home-articles__list-item {
     display: block;
     border-style: solid;
     border-width: 1px;
@@ -34,6 +64,11 @@ form input {
     border-radius: 3px;
     margin: 10px;
     padding: 5px;
+}
+
+.home-articles__list-item:hover {
+    background: dodgerblue;
+    color: white;
 }
 
 .home-articles__list-item > * {
