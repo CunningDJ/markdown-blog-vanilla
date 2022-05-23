@@ -49,6 +49,7 @@ form {
 form textarea {
     width: 80%;
     max-width: 900px;
+    height: 300px;
 }
 
 form > .form-field {
