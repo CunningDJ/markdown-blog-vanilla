@@ -255,17 +255,46 @@ class NewArticleButton {
     }
 }
 
+/*
+ * EDITOR BACK BUTTON
+ */
+class EditorBackButton {
+    _CSS_CLASS = 'editor-back-button';
+
+    constructor(onclick) {
+        this.element = document.getElementById(this._CSS_CLASS);
+        this.element.onclick = onclick;
+
+        // BIND
+        this.show.bind(this);
+        this.hide.bind(this);
+    }
+
+    show() {
+        showElementRemoveDisplay(this.element);
+    }
+
+    hide() {
+        hideElement(this.element);
+    }
+}
+
 
 /*
  * EDITOR APP
  */
 class Editor {
+    _BASE_PATH = '/editor';
+    _NEW_ARTICLE_PATH = `${this._BASE_PATH}/new`;
+    _EDIT_ARTICLE_BASEPATH = `${this._BASE_PATH}/edit`
+
     constructor(apiClient) {
         if (typeof apiClient == 'undefined') {
             apiClient = new APIClient();
         }
         this._client = apiClient;
         this.newArticleButtonComponent = new NewArticleButton(this._onClickNewArticleButton.bind(this));
+        this.backButtonComponent = new EditorBackButton(this._onclickBackButton.bind(this));
         this.articlesComponent = new EditorArticles(this._client, this._onClickArticleListItem.bind(this));
         this.updateFormComponent = new EditorUpdateForm(this._client, this._onClickUpdateArticleButton.bind(this));
         this.createFormComponent = new EditorCreateForm(this._client, this._onClickCreateButton.bind(this));
@@ -276,6 +305,9 @@ class Editor {
         this._onClickUpdateArticleButton.bind(this);
         this._onClickArticleListItem.bind(this);
         this._onClickNewArticleButton.bind(this);
+        this._onclickBackButton.bind(this);
+        this._pushStateNewArticle.bind(this);
+        this._pushStateEditArticle.bind(this);
     }
 
     fetchArticles() {
@@ -312,8 +344,12 @@ class Editor {
         // TODO: List Item Open in Update Form
         this._client.getArticle(articleId)
             .then(data => {
+                this.articlesComponent.hide();
+
                 this.updateFormComponent.populate(data);
+                this._pushStateEditArticle(articleId);
                 this.updateFormComponent.show();
+                this.backButtonComponent.show();
             })
             .catch(err => alert(JSON.stringify(err)));
     }
@@ -321,8 +357,30 @@ class Editor {
     _onClickNewArticleButton(e) {
         e.preventDefault();
         // TODO: Mechanism for asking if they want to save? Diff articleData state for update form?
+        this.articlesComponent.hide();
+
         this.updateFormComponent.hide();
+        this._pushStateNewArticle();
         this.createFormComponent.show();
+        this.backButtonComponent.show();
+    }
+
+    _onclickBackButton(e) {
+        e.preventDefault();
+        this.updateFormComponent.hide();
+        this.createFormComponent.hide();
+        history.back();
+        this.backButtonComponent.hide();
+        this.articlesComponent.fetch();
+        this.articlesComponent.show();
+    }
+
+    _pushStateNewArticle() {
+        _pushState({}, this._NEW_ARTICLE_PATH);
+    }
+
+    _pushStateEditArticle(articleId) {
+        _pushState({}, `${this._EDIT_ARTICLE_BASEPATH}/${articleId}`);
     }
 }
 
