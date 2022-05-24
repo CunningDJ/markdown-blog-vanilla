@@ -14,4 +14,4 @@ The root path of the website lists the articles available.  When one list item i
 
 
 ## Backend
-You can read more about the backend server & PostgreSQL logic [here](backend/)
+You can read more about the backend server & PostgreSQL logic [here](backend/).

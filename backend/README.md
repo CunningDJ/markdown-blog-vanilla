@@ -16,7 +16,7 @@ Contains the NodeJS server and database query logic.
 The NodeJS server code.  This defines the endpoints and the business logic in each.  In a logic project I would break this up into different files with their own routers, usually organized by REST resource like `/api/articles/*` and `/api/users/*`
 
 ### `backend/src/db.js`
-This is the Node-PostgreSQL database query library.  Here you can see the exact SQL queries used for each REST operation
+This is the Node-PostgreSQL database query library.  Here you can see the exact SQL queries used for each REST operation.  Just like the `server.js` file, this would likely be broken into a file for each table or some other subdivision if this were a larger project, but I tried to keep it simple for this project.
 
 ### `backend/pg`
 Contains the psql scripts to build the DB and tables, and the `init_db.sh` script (run with `npm run init` or `npm run init_db`) which orchestrates all of these
